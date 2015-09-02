@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<schema xmlns:tns="http://www.epam.education.com/Gems"
+        targetNamespace="http://www.epam.education.com/Gems"
+        xmlns="http://www.w3.org/2001/XMLSchema">
+
+    <element name="ListGems">
+        <complexType>
+            <sequence>
+                <element minOccurs="1" maxOccurs="unbounded" name="gem" type="tns:Gem" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <complexType name="Gem">
+        <sequence>
+            <element name="Name" type="string" />
+            <element name="Value" type="tns:valueType" />
+            <element name="Origin" type="tns:originsType" />
+            <element name="Preciousness" type="tns:preciousnessType" />
+            <element name="VisualParams" type="tns:visualParamType" />
+        </sequence>
+        <attribute name="GemID" type="tns:gemID" use="required" />
+    </complexType>
+
+    <simpleType name="gemID" >
+        <restriction base="ID" />
+    </simpleType>
+
+    <complexType name="visualParamType">
+        <sequence>
+            <element name="colorName" type="tns:colorType" />
+            <element name="transparencyValue" type="tns:transparencyType" />
+            <element name="quantitySides" type="tns:quantitySideType" />
+        </sequence>
+    </complexType>
+
+    <simpleType name="quantitySide">
+        <restriction base="positiveInteger">
+            <minInclusive value="4"/>
+            <maxInclusive value="15"/>
+        </restriction>
+    </simpleType>
+
+    <complexType name="quantitySideType" >
+        <simpleContent>
+            <extension base="tns:quantitySide">
+                <attribute name="quantitySideName" type="string" fixed="side" use="required"/>
+            </extension>
+        </simpleContent>
+    </complexType>
+
+    <simpleType name="transparency">
+        <restriction base="positiveInteger">
+            <maxInclusive value="100"/>
+        </restriction>
+    </simpleType>
+
+    <complexType name="transparencyType" >
+        <simpleContent>
+            <extension base="tns:transparency">
+                <attribute name="weightTransparency" type="string" fixed="%" use="required"/>
+            </extension>
+        </simpleContent>
+    </complexType>
+
+    <simpleType name="colorType">
+        <restriction base="string">
+            <enumeration value="WHITE"/>
+            <enumeration value="RED"/>
+            <enumeration value="GREEN"/>
+            <enumeration value="YELLOW"/>
+            <enumeration value="BLUE"/>
+        </restriction>
+    </simpleType>
+
+    <complexType name="valueType" >
+        <simpleContent>
+            <extension base="tns:value">
+                <attribute name="weightName" type="string" fixed="ct" use="required"/>
+            </extension>
+        </simpleContent>
+    </complexType>
+
+    <simpleType name="value">
+        <restriction base="decimal">
+            <fractionDigits value="2"/>
+            <minInclusive value="0.01"/>
+            <maxInclusive value="10000.00"/>
+        </restriction>
+    </simpleType>
+
+    <simpleType name="continentType">
+        <restriction base="string">
+            <enumeration value="Afrique"/>
+            <enumeration value="Australia"/>
+            <enumeration value="Azia"/>
+            <enumeration value="Europe"/>
+            <enumeration value="North America"/>
+            <enumeration value="South America"/>
+        </restriction>
+    </simpleType>
+
+    <complexType name="originsType">
+        <sequence>
+            <element name="continent" type="tns:continentType" />
+            <element name="country" type="string" />
+            <element name="region" type="string" />
+        </sequence>
+    </complexType>
+
+    <simpleType name="preciousnessType">
+        <restriction base="string">
+            <enumeration value="Jewel" />
+            <enumeration value="NoJewel" />
+        </restriction>
+    </simpleType>
+
+
+</schema>

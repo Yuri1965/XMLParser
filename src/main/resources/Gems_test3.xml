@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<gems:ListGems xmlns:gems="http://www.epam.education.com/Gems" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.epam.education.com/Gems http://www.epam.education.com/Gems/Gems.xsd">
+    <gem GemID="a6b74c9e9-2156-4712-b0ea-fd880d2a7260">
+        <Name>Rubin</Name>
+        <Value weightName="ct">1000.00</Value>
+        <Origin>
+            <continent>Europe</continent>
+            <country>Russia</country>
+            <region>Siberia</region>
+        </Origin>
+        <Preciousness>Jewel</Preciousness>
+        <VisualParams>
+            <colorName>RED</colorName>
+            <transparencyValue weightTransparency="%">90</transparencyValue>
+            <quantitySides quantitySideName="side">10</quantitySides>
+        </VisualParams>
+    </gem>
+    <gem GemID="b6b74c9e9-2156-4712-b0ea-fd880d2a7260">
+        <Name>Rubin</Name>
+        <Value weightName="ct">200.00</Value>
+        <Origin>
+            <continent>Europe</continent>
+            <country>Russia</country>
+            <region>Siberia</region>
+        </Origin>
+        <Preciousness>Jewel</Preciousness>
+        <VisualParams>
+            <colorName>RED</colorName>
+            <transparencyValue weightTransparency="%">100</transparencyValue>
+            <quantitySides quantitySideName="side">15</quantitySides>
+        </VisualParams>
+    </gem>
+    <gem GemID="c6b74c9e9-2156-4712-b0ea-fd880d2a7260">
+        <Name>Diamond</Name>
+        <Value weightName="ct">200.00</Value>
+        <Origin>
+            <continent>Afrique</continent>
+            <country>Nigeria</country>
+            <region>Jungle</region>
+        </Origin>
+        <Preciousness>Jewel</Preciousness>
+        <VisualParams>
+            <colorName>WHITE</colorName>
+            <transparencyValue weightTransparency="%">100</transparencyValue>
+            <quantitySides quantitySideName="side">10</quantitySides>
+        </VisualParams>
+    </gem>
+    <gem GemID="d6b74c9e9-2156-4712-b0ea-fd880d2a7260">
+        <Name>Emerald</Name>
+        <Value weightName="ct">250.00</Value>
+        <Origin>
+            <continent>Afrique</continent>
+            <country>Nigeria</country>
+            <region>Jungle</region>
+        </Origin>
+        <Preciousness>Jewel</Preciousness>
+        <VisualParams>
+            <colorName>GREEN</colorName>
+            <transparencyValue weightTransparency="%">95</transparencyValue>
+            <quantitySides quantitySideName="side">12</quantitySides>
+        </VisualParams>
+    </gem>
+    <gem GemID="e6b74c9e9-2156-4712-b0ea-fd880d2a7260">
+        <Name>Corundum</Name>
+        <Value weightName="ct">1250.00</Value>
+        <Origin>
+            <continent>Europe</continent>
+            <country>Russia</country>
+            <region>North Ural</region>
+        </Origin>
+        <Preciousness>NoJewel</Preciousness>
+        <VisualParams>
+            <colorName>RED</colorName>
+            <transparencyValue weightTransparency="%">85</transparencyValue>
+            <quantitySides quantitySideName="side">15</quantitySides>
+        </VisualParams>
+    </gem>
+    <gem GemID="f6b74c9e9-2156-4712-b0ea-fd880d2a7260">
+        <Name>Amethyst</Name>
+        <Value weightName="ct">5250.00</Value>
+        <Origin>
+            <continent>Europe</continent>
+            <country>Russia</country>
+            <region>South Ural</region>
+        </Origin>
+        <Preciousness>NoJewel</Preciousness>
+        <VisualParams>
+            <colorName>YELLOW</colorName>
+            <transparencyValue weightTransparency="%">85</transparencyValue>
+            <quantitySides quantitySideName="side">15</quantitySides>
+        </VisualParams>
+    </gem>
+</gems:ListGems>
