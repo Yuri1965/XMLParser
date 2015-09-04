@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 /**
- * Created by URA on 26.08.2015.
+ * Properties File utils class
  */
 public class PropertiesFileUtil {
     public static Properties myProperties = new Properties();

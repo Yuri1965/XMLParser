@@ -5,46 +5,45 @@ import com.sun.xml.internal.bind.marshaller.NamespacePrefixMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.sun.org.apache.xerces.internal.jaxp.validation.XMLSchemaFactory;
-import org.xml.sax.SAXException;
-
 import javax.xml.bind.*;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
-import javax.xml.validation.Validator;
 import java.io.*;
 
 /**
- * Created by URA on 01.09.2015.
+ * JAXB Parser class
  */
 public class MyJAXBParser {
-    static Logger myLoggerJAXBParser = LogManager.getLogger(MyJAXBParser.class.getName());
+    // Логгер
+    public static Logger myLoggerJAXBParser = LogManager.getLogger(MyJAXBParser.class.getName());
+
+    // Константы
+    private static final String FIRST_PREFIX = "gems"; // DEFAULT NAMESPACE
+    private static final String FIRST_URI = "http://www.epam.education.com/Gems";
+    private static final String BAR_PREFIX = "xsi";
+    private static final String BAR_URI = "http://www.w3.org/2001/XMLSchema-instance";
+
+    private static final String PROPERTY_JAXB_SCHEMA_LOCATION =
+            "http://www.epam.education.com/Gems http://www.epam.education.com/Gems/Gems.xsd";
+    private static final  String PROPERTY_NAME_SPACE_PREFIX_MAPPER = "com.sun.xml.internal.bind.namespacePrefixMapper";
 
     // входной файл для парсера
     private String xmlFilePath;
 
-    // файл схемы для парсера
-    private String xsdFilePath;
-
-    // выходной файл для парсера
-    private String xmlChangeFilePath;
+    // контекст парсера
+    private JAXBContext myJAXBContext;
 
     /**
      * Constructor
      * @param xmlFilePath
-     * @param xsdFilePath
-     * @param xmlChangeFilePath
      */
-    public MyJAXBParser(String xmlFilePath, String xsdFilePath, String xmlChangeFilePath) {
+    public MyJAXBParser(String xmlFilePath) {
         this.xmlFilePath = xmlFilePath;
-        this.xsdFilePath = xsdFilePath;
-        this.xmlChangeFilePath = xmlChangeFilePath;
+
+        try {
+            this.myJAXBContext = JAXBContext.newInstance(ListGems.class);
+        } catch (JAXBException e) {
+            e.printStackTrace();
+            myLoggerJAXBParser.error(e.getMessage());
+        }
     }
 
     // парсит и заполняет список объектов из xml файла
@@ -53,8 +52,7 @@ public class MyJAXBParser {
 
         try {
             File xmlFile = new File(xmlFilePath);
-            JAXBContext jaxbContext = JAXBContext.newInstance(ListGems.class);
-            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+            Unmarshaller jaxbUnmarshaller = myJAXBContext.createUnmarshaller();
 
             myLoggerJAXBParser.info("Start parse file: " + xmlFilePath + " ...");
             listGems = (ListGems) jaxbUnmarshaller.unmarshal(xmlFile);
@@ -73,18 +71,16 @@ public class MyJAXBParser {
     }
 
     // сохраняет список объектов в xml файл
-    public void SaveToXMLFile(ListGems listGems) {
+    public void SaveToXMLFile(ListGems listGems, String xmlChangeFilePath) {
         try {
             myLoggerJAXBParser.info("Start save data to file: " + xmlChangeFilePath + " ...");
 
-            JAXBContext jaxbContext = JAXBContext.newInstance(ListGems.class);
-            Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+            Marshaller jaxbMarshaller = myJAXBContext.createMarshaller();
 
             jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            jaxbMarshaller.setProperty(Marshaller.JAXB_SCHEMA_LOCATION,
-                    "http://www.epam.education.com/Gems http://www.epam.education.com/Gems/Gems.xsd");
+            jaxbMarshaller.setProperty(Marshaller.JAXB_SCHEMA_LOCATION, PROPERTY_JAXB_SCHEMA_LOCATION);
             try {
-                jaxbMarshaller.setProperty("com.sun.xml.internal.bind.namespacePrefixMapper", new MyNameSpaceMapper());
+                jaxbMarshaller.setProperty(PROPERTY_NAME_SPACE_PREFIX_MAPPER, new MyNameSpaceMapper());
             } catch(PropertyException e) {
                 myLoggerJAXBParser.error(e.getMessage());
             }
@@ -105,21 +101,20 @@ public class MyJAXBParser {
 
     // класс для указания правильных namespace и т.п. при записи данных в xml файл с данными
     private class MyNameSpaceMapper extends NamespacePrefixMapper {
-
-        private static final String FIRST_PREFIX = "gems"; // DEFAULT NAMESPACE
-        private static final String FIRST_URI = "http://www.epam.education.com/Gems";
-
-        private static final String BAR_PREFIX = "xsi";
-        private static final String BAR_URI = "http://www.w3.org/2001/XMLSchema-instance";
+//        private static final String FIRST_URI = "http://www.epam.education.com/Gems";
+//        private static final String FIRST_PREFIX = "gems"; // DEFAULT NAMESPACE
+//
+//        private static final String BAR_URI = "http://www.w3.org/2001/XMLSchema-instance";
+//        private static final String BAR_PREFIX = "xsi";
 
         @Override
-        public String getPreferredPrefix(String namespaceUri, String suggestion,
-                                         boolean requirePrefix) {
+        public String getPreferredPrefix(String namespaceUri, String suggestion, boolean requirePrefix) {
             if(FIRST_URI.equals(namespaceUri)) {
                 return FIRST_PREFIX;
             } else if(BAR_URI.equals(namespaceUri)) {
                 return BAR_PREFIX;
             }
+
             return suggestion;
         }
 
@@ -128,62 +123,4 @@ public class MyJAXBParser {
             return new String[] {FIRST_URI, BAR_URI };
         }
     }
-
-    // валидация xml файла по схеме
-    public static boolean validate(String xmlFilePath, String xmlSchemaFilePath) {
-        try {
-            myLoggerJAXBParser.info("Start validation file: " + xmlFilePath +
-                    " by scheme file: " + xmlSchemaFilePath + " ...");
-
-            SchemaFactory factory = new XMLSchemaFactory();
-            Source schemaFile = new StreamSource(new File(xmlSchemaFilePath));
-            Source xmlSource = new StreamSource(new File(xmlFilePath));
-            Schema schema = factory.newSchema(schemaFile);
-            Validator validator = schema.newValidator();
-            validator.validate(xmlSource);
-
-            myLoggerJAXBParser.info("File is valid...");
-        } catch (SAXException e) {
-            myLoggerJAXBParser.info("File: " + xmlFilePath + " is not valid...");
-            myLoggerJAXBParser.error(e.getMessage());
-            return false;
-        } catch (IOException e) {
-            myLoggerJAXBParser.info("File: " + xmlFilePath + " is not valid...");
-            myLoggerJAXBParser.error(e.getMessage());
-            return false;
-        } catch (Exception e) {
-            e.printStackTrace();
-            myLoggerJAXBParser.info("File: " + xmlFilePath + " is not valid...");
-            myLoggerJAXBParser.error(e.getMessage());
-            return false;
-        } catch (Error e) {
-            e.printStackTrace();
-            myLoggerJAXBParser.info("File: " + xmlFilePath + " is not valid...");
-            myLoggerJAXBParser.error(e.getMessage());
-            return false;
-        }
-
-        return true;
-    }
-
-    // метод преобразования файла XML в другой файл XML согласно шаблона XSL
-    public void transformXMLByXSL(String xslFilePath, String xmlFilePath, String xmlTransformFilePath) {
-        try {
-            myLoggerJAXBParser.info("Start transform file...");
-            TransformerFactory tf =
-                    TransformerFactory.newInstance();
-            //установка используемого XSL-преобразования
-            Transformer transformer =
-                    tf.newTransformer(new StreamSource(xslFilePath));
-            //установка исходного XML-документа и конечного XML-файла
-            transformer.transform(
-                    new StreamSource(xmlFilePath),
-                    new StreamResult(xmlTransformFilePath));
-            myLoggerJAXBParser.info("End transform file...");
-        } catch(TransformerException e) {
-            e.printStackTrace();
-            myLoggerJAXBParser.error(e.getMessage());
-        }
-    }
-
 }

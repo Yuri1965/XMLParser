@@ -1,5 +1,6 @@
 package com.epam.education.XMLParsing.entityObjects.classes;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -31,10 +32,13 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {"gem"})
 @XmlRootElement(name = "ListGems", namespace = "http://www.epam.education.com/Gems")
-public class ListGems {
+public class ListGems implements Serializable {
 
     @XmlElement(required = true)
     protected List<Gem> gem;
+
+    public ListGems() {
+    }
 
     /**
      * Gets the value of the gem property.
