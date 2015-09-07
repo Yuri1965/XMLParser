@@ -16,7 +16,7 @@ public class MyJAXBParser {
     public static Logger myLoggerJAXBParser = LogManager.getLogger(MyJAXBParser.class.getName());
 
     // Константы
-    private static final String FIRST_PREFIX = "gems"; // DEFAULT NAMESPACE
+    private static final String FIRST_PREFIX = "gems";
     private static final String FIRST_URI = "http://www.epam.education.com/Gems";
     private static final String BAR_PREFIX = "xsi";
     private static final String BAR_URI = "http://www.w3.org/2001/XMLSchema-instance";
@@ -101,12 +101,6 @@ public class MyJAXBParser {
 
     // класс для указания правильных namespace и т.п. при записи данных в xml файл с данными
     private class MyNameSpaceMapper extends NamespacePrefixMapper {
-//        private static final String FIRST_URI = "http://www.epam.education.com/Gems";
-//        private static final String FIRST_PREFIX = "gems"; // DEFAULT NAMESPACE
-//
-//        private static final String BAR_URI = "http://www.w3.org/2001/XMLSchema-instance";
-//        private static final String BAR_PREFIX = "xsi";
-
         @Override
         public String getPreferredPrefix(String namespaceUri, String suggestion, boolean requirePrefix) {
             if(FIRST_URI.equals(namespaceUri)) {

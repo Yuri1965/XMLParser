@@ -21,9 +21,6 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 
-//import java.io.FileNotFoundException;
-//import java.io.FileOutputStream;
-
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -79,6 +76,7 @@ public class MyDOMParser {
         }
     }
 
+    // заполнение списка объектов
     private static ListGems listBuilder(Element root) throws SAXException, IOException {
         ListGems listGems = new ListGems();
         ArrayList<Gem> list = (ArrayList<Gem>) listGems.getGem();
@@ -148,105 +146,123 @@ public class MyDOMParser {
         return value;
     }
 
+    // создает документ
     private Document documentCreate(List<Gem> list) {
         Document doc = null;
 
         try {
-            doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().
-                    getDOMImplementation().createDocument("\"http://www.epam.education.com/Gems\"" +
-                            " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
-                            " xsi:schemaLocation=\"http://www.epam.education.com/Gems http://www.epam.education.com/Gems/Gems.xsd\"",
-                    "gems:ListGems", null);
+            DocumentBuilderFactory docBF = DocumentBuilderFactory.newInstance();
+
+            doc = docBF.newDocumentBuilder().getDOMImplementation().
+                    createDocument("http://www.epam.education.com/Gems", "gems:ListGems", null);
+
+            doc.setXmlStandalone(true);
+
+            Element root = doc.getDocumentElement();
+
+            Attr nsAttr = doc.createAttribute("xmlns:xsi");
+            nsAttr.setTextContent("http://www.w3.org/2001/XMLSchema-instance");
+            root.setAttributeNode(nsAttr);
+
+            Attr slAttr = doc.createAttribute("xsi:schemaLocation");
+            slAttr.setTextContent("http://www.epam.education.com/Gems http://www.epam.education.com/Gems/Gems.xsd");
+            root.setAttributeNode(slAttr);
+
+            Iterator<Gem> gemIterator = list.iterator();
+
+            while(gemIterator.hasNext()) {
+                Gem gem = gemIterator.next();
+                Element gemElement = doc.createElement("gem");
+
+                gemElement.setAttribute("GemID", gem.getGemID());
+
+                Element nameElement = doc.createElement("Name");
+                nameElement.setTextContent(gem.getName());
+                gemElement.appendChild(nameElement);
+
+                Element valueElement = doc.createElement("Value");
+                valueElement.setAttribute("weightName", gem.getValue().getWeightName());
+                valueElement.setTextContent(gem.getValue().getValue().toString());
+                gemElement.appendChild(valueElement);
+
+                Element originElement = doc.createElement("Origin");
+                Element continentElement = doc.createElement("continent");
+                continentElement.setTextContent(gem.getOrigin().getContinent().value());
+                originElement.appendChild(continentElement);
+                Element countryElement = doc.createElement("country");
+                countryElement.setTextContent(gem.getOrigin().getCountry());
+                originElement.appendChild(countryElement);
+                Element regionElement = doc.createElement("region");
+                regionElement.setTextContent(gem.getOrigin().getRegion());
+                originElement.appendChild(regionElement);
+                gemElement.appendChild(originElement);
+
+                Element preciousnessElement = doc.createElement("Preciousness");
+                preciousnessElement.setTextContent(gem.getPreciousness().value());
+                gemElement.appendChild(preciousnessElement);
+
+                Element visualsElement = doc.createElement("VisualParams");
+                Element colorNameElement = doc.createElement("colorName");
+                colorNameElement.setTextContent(gem.getVisualParams().getColorName().value());
+                visualsElement.appendChild(colorNameElement);
+                Element transparencyElement = doc.createElement("transparencyValue");
+                transparencyElement.setAttribute("weightTransparency", gem.getVisualParams().getTransparencyValue().getWeightTransparency());
+                transparencyElement.setTextContent(Integer.toString(gem.getVisualParams().getTransparencyValue().getValue()));
+                visualsElement.appendChild(transparencyElement);
+                Element quantitySidesElement = doc.createElement("quantitySides");
+                quantitySidesElement.setAttribute("quantitySideName", gem.getVisualParams().getQuantitySides().getQuantitySideName());
+                quantitySidesElement.setTextContent(Integer.toString(gem.getVisualParams().getQuantitySides().getValue()));
+                visualsElement.appendChild(quantitySidesElement);
+                gemElement.appendChild(visualsElement);
+
+                root.appendChild(gemElement);
+            }
+
+            doc.normalizeDocument();
+
         } catch (ParserConfigurationException e) {
-            e.printStackTrace();
+            myLoggerDOMParser.error(e.getMessage());
+            doc = null;
         } catch (DOMException e) {
-            e.printStackTrace();
+            myLoggerDOMParser.error(e.getMessage());
+            doc = null;
+        } finally {
+            return doc;
         }
-
-        doc.setXmlStandalone(true);
-
-        Element root = doc.getDocumentElement();
-
-
-        Iterator<Gem> gemIterator = list.iterator();
-
-        while(gemIterator.hasNext()) {
-            Gem gem = gemIterator.next();
-            Element gemElement = doc.createElement("gem");
-
-            gemElement.setAttribute("GemID", gem.getGemID());
-
-            Element nameElement = doc.createElement("Name");
-            nameElement.setTextContent(gem.getName());
-            gemElement.appendChild(nameElement);
-
-            Element valueElement = doc.createElement("Value");
-            valueElement.setAttribute("weightName", gem.getValue().getWeightName());
-            valueElement.setTextContent(gem.getValue().getValue().toString());
-            gemElement.appendChild(valueElement);
-
-            Element originElement = doc.createElement("Origin");
-            Element continentElement = doc.createElement("continent");
-            continentElement.setTextContent(gem.getOrigin().getContinent().value());
-            originElement.appendChild(continentElement);
-            Element countryElement = doc.createElement("country");
-            countryElement.setTextContent(gem.getOrigin().getCountry());
-            originElement.appendChild(countryElement);
-            Element regionElement = doc.createElement("region");
-            regionElement.setTextContent(gem.getOrigin().getRegion());
-            originElement.appendChild(regionElement);
-            gemElement.appendChild(originElement);
-
-            Element preciousnessElement = doc.createElement("Preciousness");
-            preciousnessElement.setTextContent(gem.getPreciousness().value());
-            gemElement.appendChild(preciousnessElement);
-
-            Element visualsElement = doc.createElement("VisualParams");
-            Element colorNameElement = doc.createElement("colorName");
-            colorNameElement.setTextContent(gem.getVisualParams().getColorName().value());
-            visualsElement.appendChild(colorNameElement);
-            Element transparencyElement = doc.createElement("transparencyValue");
-            transparencyElement.setAttribute("weightTransparency", gem.getVisualParams().getTransparencyValue().getWeightTransparency());
-            transparencyElement.setTextContent(Integer.toString(gem.getVisualParams().getTransparencyValue().getValue()));
-            visualsElement.appendChild(transparencyElement);
-            Element quantitySidesElement = doc.createElement("quantitySides");
-            quantitySidesElement.setAttribute("quantitySideName", gem.getVisualParams().getQuantitySides().getQuantitySideName());
-            quantitySidesElement.setTextContent(Integer.toString(gem.getVisualParams().getQuantitySides().getValue()));
-            visualsElement.appendChild(quantitySidesElement);
-            gemElement.appendChild(visualsElement);
-
-            root.appendChild(gemElement);
-        }
-
-        return doc;
     }
 
     // сохраняет список объектов в xml файл
     public void SaveToXMLFile(ListGems listGems, String xmlChangeFilePath) {
-        Document doc = documentCreate(listGems.getGem());
-
         myLoggerDOMParser.info("Start save data to file: " + xmlChangeFilePath + " ...");
 
         try {
-            Source source = new DOMSource(doc);
-            File file = new File(xmlChangeFilePath);
-            Result resultToFile = new StreamResult(file);
-            TransformerFactory factory = TransformerFactory.newInstance();
-            Transformer transformer = factory.newTransformer();
+            Document doc = documentCreate(listGems.getGem());
 
-            transformer.setOutputProperty(OutputKeys.METHOD,"xml");
-            transformer.setOutputProperty(OutputKeys.INDENT,"yes");
-            transformer.setOutputProperty(OutputKeys.STANDALONE,"yes");
-            transformer.setOutputProperty(OutputKeys.ENCODING,"UTF-8");
+            if (doc != null) {
+                Source source = new DOMSource(doc);
+                File file = new File(xmlChangeFilePath);
+                Result resultToFile = new StreamResult(file);
+                TransformerFactory factory = TransformerFactory.newInstance();
+                Transformer transformer = factory.newTransformer();
 
-            transformer.transform(source, resultToFile);
+                transformer.setOutputProperty(OutputKeys.METHOD,"xml");
+                transformer.setOutputProperty(OutputKeys.INDENT,"yes");
+                transformer.setOutputProperty(OutputKeys.STANDALONE,"yes");
+                transformer.setOutputProperty(OutputKeys.ENCODING,"UTF-8");
 
-            myLoggerDOMParser.info("Data saving to file: " + xmlChangeFilePath + " ...");
-        }
-        catch (  TransformerConfigurationException e) {
+                transformer.transform(source, resultToFile);
+
+                myLoggerDOMParser.info("Data saving to file: " + xmlChangeFilePath + " ...");
+            } else {
+                myLoggerDOMParser.info("No data saving to file...");
+            }
+        } catch (DOMException e) {
             myLoggerDOMParser.error(e.getMessage());
         }
-        catch (  TransformerException e) {
+        catch (TransformerConfigurationException e) {
+            myLoggerDOMParser.error(e.getMessage());
+        }
+        catch (TransformerException e) {
             myLoggerDOMParser.error(e.getMessage());
         }
     }

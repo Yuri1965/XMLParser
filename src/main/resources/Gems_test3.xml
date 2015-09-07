@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<gems:ListGems xmlns:gems="http://www.epam.education.com/Gems" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<gems:ListGems xmlns:gems="http://www.epam.education.com/Gems"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                xsi:schemaLocation="http://www.epam.education.com/Gems http://www.epam.education.com/Gems/Gems.xsd">
     <gem GemID="a6b74c9e9-2156-4712-b0ea-fd880d2a7260">
         <Name>Rubin</Name>
