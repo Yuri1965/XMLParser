@@ -2,7 +2,7 @@ package com.epam.education.XMLParsing;
 
 import com.epam.education.XMLParsing.Parsers.MyDOMParser;
 import com.epam.education.XMLParsing.Parsers.MyJAXBParser;
-import com.epam.education.XMLParsing.Parsers.MySAXParser;
+import com.epam.education.XMLParsing.Parsers.MySaxParser;
 import com.epam.education.XMLParsing.Utils.ParserUtil;
 import com.epam.education.XMLParsing.Utils.PropertiesFileUtil;
 import com.epam.education.XMLParsing.entityObjects.classes.Gem;
@@ -96,7 +96,7 @@ public class XMLParserRun {
             // разбор и загрузка данных в список объектов из файла xml при помощи SAX
             myLogger.info("SAXParser start working...");
             // создаем наш SAX парсер
-            MySAXParser mySaxParser = new MySAXParser(xmlOriginalFilePath);
+            MySaxParser mySaxParser = new MySaxParser(xmlOriginalFilePath);
             // загружаем данные в наши объекты из xml файла и выводим их в консоль
             listGems = mySaxParser.LoadFromXMLFile(true);
             myLogger.info("SAXParser end working...");
