@@ -5,13 +5,12 @@ import com.epam.education.XMLParsing.entityObjects.classes.*;
 import com.epam.education.XMLParsing.entityObjects.enums.ColorType;
 import com.epam.education.XMLParsing.entityObjects.enums.ContinentType;
 import com.epam.education.XMLParsing.entityObjects.enums.PreciousnessType;
-import com.sun.org.apache.xerces.internal.parsers.DOMParser;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.sun.org.apache.xerces.internal.parsers.DOMParser;
 import org.w3c.dom.*;
-
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -65,6 +64,8 @@ public class MyDOMParser {
             if (outputToConsole) {
                 System.out.println(listGems.toString());
             }
+
+            return listGems;
         } catch (SAXException e) {
             myLoggerDOMParser.error(e.getMessage());
         }
@@ -84,9 +85,8 @@ public class MyDOMParser {
         // получение списка дочерних элементов <Gem>
         NodeList gemNodes = root.getElementsByTagName("gem");
 
-        Gem gem = null;
         for (int i = 0; i < gemNodes.getLength(); i++) {
-            gem = new Gem();
+            Gem gem = new Gem();
             Element gemElement = (Element) gemNodes.item(i);
 
             // заполнение объекта gem
@@ -135,6 +135,7 @@ public class MyDOMParser {
     private static Element getChild(Element parent, String childName) {
         NodeList list = parent.getElementsByTagName(childName);
         Element child = (Element) list.item(0);
+
         return child;
     }
 
@@ -143,10 +144,11 @@ public class MyDOMParser {
         Element child = getChild(parent, childName);
         Node node = child.getFirstChild();
         String value = node.getNodeValue();
+
         return value;
     }
 
-    // создает документ
+    // создает xml документ
     private Document documentCreate(List<Gem> list) {
         Document doc = null;
 
@@ -170,7 +172,7 @@ public class MyDOMParser {
 
             Iterator<Gem> gemIterator = list.iterator();
 
-            while(gemIterator.hasNext()) {
+            while (gemIterator.hasNext()) {
                 Gem gem = gemIterator.next();
                 Element gemElement = doc.createElement("gem");
 
@@ -220,6 +222,7 @@ public class MyDOMParser {
 
             doc.normalizeDocument();
 
+            return doc;
         } catch (ParserConfigurationException e) {
             myLoggerDOMParser.error(e.getMessage());
             doc = null;
@@ -236,6 +239,7 @@ public class MyDOMParser {
         myLoggerDOMParser.info("Start save data to file: " + xmlChangeFilePath + " ...");
 
         try {
+            // создадим xml документ на основе коллекции
             Document doc = documentCreate(listGems.getGem());
 
             if (doc != null) {
@@ -250,6 +254,7 @@ public class MyDOMParser {
                 transformer.setOutputProperty(OutputKeys.STANDALONE,"yes");
                 transformer.setOutputProperty(OutputKeys.ENCODING,"UTF-8");
 
+                // запишем xml документ в файл
                 transformer.transform(source, resultToFile);
 
                 myLoggerDOMParser.info("Data saving to file: " + xmlChangeFilePath + " ...");
@@ -266,5 +271,4 @@ public class MyDOMParser {
             myLoggerDOMParser.error(e.getMessage());
         }
     }
-
 }

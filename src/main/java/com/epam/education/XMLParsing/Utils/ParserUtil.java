@@ -1,7 +1,6 @@
 package com.epam.education.XMLParsing.Utils;
 
 import com.sun.org.apache.xerces.internal.jaxp.validation.XMLSchemaFactory;
-import com.sun.org.apache.xerces.internal.parsers.DOMParser;
 import org.apache.logging.log4j.Logger;
 import org.xml.sax.*;
 
@@ -21,54 +20,6 @@ import java.io.IOException;
  * Utils for Parsers class
  */
 public class ParserUtil {
-    // Константы
-    private static final String FUTURE_VALIDATION = "http://xml.org/sax/features/validation";
-    private static final String FUTURE_SCHEME = "http://apache.org/xml/features/validation/schema";
-
-    // валидация xml файла по схеме
-    public static boolean validateXMLFile(String xmlFilePath, Logger myLogger) {
-        DOMParser parser = new DOMParser();
-
-        try {
-            // установка обработчика ошибок
-            parser.setErrorHandler(new MyErrorHandler(myLogger));
-            // установка способов проверки с использованием XSD, указанного в самом файле
-            parser.setFeature(FUTURE_VALIDATION, true);
-            parser.setFeature(FUTURE_SCHEME, true);
-
-            myLogger.info("Start validation file: " + xmlFilePath + " ...");
-            parser.parse(xmlFilePath);
-            myLogger.info("File is valid...");
-
-        } catch (SAXNotRecognizedException e) {
-            myLogger.error(e.getMessage());
-            myLogger.info("File: " + xmlFilePath + " is not valid...");
-            return false;
-        } catch (SAXNotSupportedException e) {
-            myLogger.error(e.getMessage());
-            myLogger.info("File: " + xmlFilePath + " is not valid...");
-            return false;
-        } catch (SAXException e) {
-            myLogger.error(e.getMessage());
-            myLogger.info("File: " + xmlFilePath + " is not valid...");
-            return false;
-        } catch (IOException e) {
-            e.printStackTrace();
-            myLogger.error(e.getMessage());
-            return false;
-        } catch (Exception e) {
-            e.printStackTrace();
-            myLogger.error(e.getMessage());
-            return false;
-        } catch (Error e) {
-            e.printStackTrace();
-            myLogger.error(e.getMessage());
-            return false;
-        }
-
-        return true;
-    }
-
     // валидация xml файла по схеме указанной явно в виде файла
     public static boolean validateXMLFile(String xmlFilePath, String xmlSchemaFilePath, Logger myLogger) {
         try {
