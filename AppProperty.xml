@@ -5,7 +5,8 @@
     <entry key="xsdFile">..\XMLParser\src\main\resources\Gems.xsd</entry>
     <entry key="xslFile">..\XMLParser\src\main\resources\TransformGems.xsl</entry>
     <entry key="originalFile">..\XMLParser\src\main\resources\Gems_test3.xml</entry>
-    <entry key="changeJAXBFile">..\XMLParser\Gems_test4.xml</entry>
-    <entry key="changeDOMFile">..\XMLParser\Gems_test5.xml</entry>
-    <entry key="transformFile">..\XMLParser\new_Gems_test4.xml</entry>
+    <entry key="changeJAXBFile">..\XMLParser\Gems_changeJAXB.xml</entry>
+    <entry key="changeDOMFile">..\XMLParser\Gems_changeDOM.xml</entry>
+    <entry key="changeStAXFile">..\XMLParser\Gems_changeStAX.xml</entry>
+    <entry key="transformFile">..\XMLParser\changeByXSLTransform.xml</entry>
 </properties>
